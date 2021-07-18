@@ -1,3 +1,3 @@
-<img src="https://raw.githubusercontent.com/Keref/RoarNetwork/app/images/lion.png" alt="RoarNetwork" align="center" />
+<img src="https://github.com/Keref/RoarNetwork/blob/main/app/images/lion.png?raw=true" alt="RoarNetwork" align="center" />
 
 <br />
