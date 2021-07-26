@@ -91,14 +91,7 @@ export default function Header() {
         <MenuIcon />
       </IconButton>
 
-      <Button
-        component="h2"
-        variant="h5"
-        color="inherit"
-        align="center"
-        noWrap
-        className={classes.toolbarTitle}
-      >
+      <Button className={classes.toolbarTitle}>
         <FormattedMessage {...messages.title} />
       </Button>
 

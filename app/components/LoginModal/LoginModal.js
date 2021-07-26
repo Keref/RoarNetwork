@@ -48,14 +48,16 @@ class LoginModal extends React.Component {
 
     // on oaut login callback, it will be logged in but without mnemonic, which is provided by the server, so need to check login first
     const profile = await roarAPI.login();
-    console.log('gotprofsdf', profile);
+
     // if no seed found locally nor in login information, cant do anything, destroy session and start afresh
     if (!myMnemonic && !profile.mnemonic) {
       roarAPI.logout();
       this.context.wallet.logout();
     } else if (profile.status == 'success') {
-      this.context.updateProfile(profile.username, profile.address);
-      this.context.wallet.importMnemonic(myMnemonic || profile.mnemonic);
+      this.context.wallet.importMnemonic(
+        myMnemonic || profile.mnemonic,
+        profile.username,
+      );
     } else {
       // we have a mnemonic, but we've been logged out of the server, use mnemonic to log in with signature
       this.checkMnemonic(myMnemonic || profile.mnemonic);

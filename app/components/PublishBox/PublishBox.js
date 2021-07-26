@@ -91,7 +91,7 @@ class PublishBox extends React.Component {
 }
 
 PublishBox.propTypes = {
-  messageId: PropTypes.number,
+  messageId: PropTypes.string,
   publishCallback: PropTypes.func,
 };
 

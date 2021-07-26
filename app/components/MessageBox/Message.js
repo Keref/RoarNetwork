@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
 
 import Link from '@material-ui/core/Link';
 import ReactMarkdown from 'react-markdown';
@@ -12,7 +11,7 @@ import StyledBox from './StyledBox';
 import './markdown-styles.module.css';
 
 // eslint-disable-next-line react/prefer-stateless-function
-export class Message extends React.Component {
+export default class Message extends React.Component {
   render() {
     return (
       <StyledBox>
@@ -27,10 +26,7 @@ export class Message extends React.Component {
               flexDirection: 'row',
             }}
           >
-            <Img
-              src={DefaultUser}
-              alt={<FormattedMessage {...messages.author} />}
-            />
+            <Img src={DefaultUser} alt={this.props.ownerName} />
 
             <span
               style={{
@@ -73,12 +69,12 @@ export class Message extends React.Component {
 }
 
 Message.propTypes = {
-  messageId: PropTypes.number,
-  tips: PropTypes.array,
+  messageId: PropTypes.string,
+  tips: PropTypes.object,
   comments: PropTypes.array,
   emphasize: PropTypes.bool,
   ownerName: PropTypes.string,
   interactions: PropTypes.element,
-  displayMessage: PropTypes.array,
+  displayMessage: PropTypes.func,
   message: PropTypes.string,
 };

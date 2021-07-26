@@ -1,15 +1,15 @@
 import Web3 from 'web3';
 import { ethers } from 'ethers';
-import roarAPI from './api';
+// import roarAPI from './api';
 import MessagesABI from './ABI/MessagesABI';
 import ProfileABI from './ABI/ProfileABI';
 import ProfileFactoryABI from './ABI/ProfileFactoryABI';
 import InteractionTipsABI from './ABI/InteractionTipsABI';
 
 class Wallet {
-  #privateKey;
+  // #privateKey;
 
-  publicKey;
+  // publicKey;
 
   address = '';
 
@@ -52,18 +52,20 @@ class Wallet {
    * This wallet
    */
   constructor() {
-    web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
+    this.web3 = new Web3(
+      new Web3.providers.HttpProvider('http://127.0.0.1:8545'),
+    );
     // this.connectToRPCAccount();
 
-    this.messagesContract = new web3.eth.Contract(
+    this.messagesContract = new this.web3.eth.Contract(
       MessagesABI,
       this.messagesAddress,
     );
-    this.profileFactoryContract = new web3.eth.Contract(
+    this.profileFactoryContract = new this.web3.eth.Contract(
       ProfileFactoryABI,
       this.profileFactoryAddress,
     );
-    this.interactionTipsContract = new web3.eth.Contract(
+    this.interactionTipsContract = new this.web3.eth.Contract(
       InteractionTipsABI,
       this.interactionTipsAddress,
     );
@@ -74,9 +76,8 @@ class Wallet {
    */
   importMnemonic(mnemonic, username) {
     const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
-    console.log(mnemonicWallet);
 
-    web3.eth.accounts.wallet.add(mnemonicWallet.privateKey);
+    this.web3.eth.accounts.wallet.add(mnemonicWallet.privateKey);
     this.username = username;
     this.address = mnemonicWallet.address;
     this.myAccount = mnemonicWallet.address;
@@ -89,10 +90,12 @@ class Wallet {
    * @dev Uses the RPC account as user account, useful for testing locally
    */
   connectToRPCAccount() {
-    web3.eth.getAccounts((error, result) => {
-      console.log('got rpc accounts', result, result[0]);
-      this.setVars(result[0]);
-      this.myAccount = result[0];
+    this.web3.eth.getAccounts((error, result) => {
+      // console.log('got rpc accounts', result, result[0]);
+      const [account1] = result;
+
+      this.setVars(account1);
+      this.myAccount = account1;
     });
   }
 
@@ -135,17 +138,17 @@ class Wallet {
       .call(async (err, address) => {
         if (err) console.log(err);
 
-        if (address == 0) {
+        if (address === 0) {
           this.profileFactoryContract.methods
             .deployNewProfile(this.username)
             .send({ from: this.myAccount, gas: this.maxGas })
-            .on('transactionHash', function(receipt) {})
+            // .on('transactionHash', function(receipt) {})
             .on('receipt', function(receipt) {
-              console.log('Success creating profile');
-              console.log(receipt);
+              // console.log('Success creating profile');
+              // console.log(receipt);
               const profileEvent = receipt.events.ProfileCreated;
               this.myProfileAddress = profileEvent.returnValues.tokenAddress;
-              this.profileContract = new web3.eth.Contract(
+              this.profileContract = new this.web3.eth.Contract(
                 ProfileABI,
                 this.myProfileAddress,
               );
@@ -155,18 +158,17 @@ class Wallet {
             });
         } else {
           this.myProfileAddress = address;
-          console.log('addresfdsfs', address);
-          this.profileContract = new web3.eth.Contract(
+
+          this.profileContract = new this.web3.eth.Contract(
             ProfileABI,
             this.myProfileAddress,
           );
           this.balance = await this.profileContract.methods
             .balanceOf(this.address)
             .call();
-          console.log('user coin balance', this.balance);
         }
 
-        web3.eth.getBalance(this.address, (err, res) => {
+        this.web3.eth.getBalance(this.address, (error, res) => {
           this.ethBalance = res;
         });
       });
@@ -174,7 +176,7 @@ class Wallet {
 
   sendMessage = async (message, commentId) => {
     if (!message) {
-      console.log('Empty message');
+      // console.log('Empty message');
       return;
     }
     console.log('Tweeting', message, 'isAnswer to', commentId);
@@ -270,14 +272,17 @@ class Wallet {
    */
   buyTokens = async (amount, profileAddress) => {
     console.log('buy', amount, 'creator tokens at ', profileAddress);
-    const profileContract = new web3.eth.Contract(ProfileABI, profileAddress);
+    const profileContract = new this.web3.eth.Contract(
+      ProfileABI,
+      profileAddress,
+    );
 
     const sale = await profileContract.methods
       .buyStock()
       .send({
         from: this.myAccount,
         gas: this.maxGas,
-        value: web3.utils.toWei(amount),
+        value: this.web3.utils.toWei(amount),
       })
       .on('transactionHash', function(receipt) {})
       .on('receipt', async receipt => receipt);

@@ -154,12 +154,12 @@ class MessageBox extends React.Component {
 }
 
 MessageBox.propTypes = {
-  messageId: PropTypes.number,
-  tips: PropTypes.array,
+  messageId: PropTypes.string,
+  tips: PropTypes.object,
   comments: PropTypes.array,
   emphasize: PropTypes.bool,
   ownerName: PropTypes.string,
-  message: PropTypes.array,
+  message: PropTypes.string,
   publishCallback: PropTypes.func,
 };
 
