@@ -1,24 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { FaImages, FaCode } from 'react-icons/fa';
 
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+import Link from '@material-ui/core/Link';
 
-import A from './A';
-import Img from './Img';
-import DefaultUser from '../../images/defaultuser.png';
 import ButtonBar from './ButtonBar';
-import HeaderLink from './HeaderLink';
 import messages from './messages';
 import CloutContext from '../../cloutContext';
 import StyledBox from '../MessageBox/StyledBox';
 
-function PublishBox(props) {
-  return <Publish messageId={props.messageId} />;
-}
-
-class Publish extends React.Component {
+class PublishBox extends React.Component {
   static contextType = CloutContext;
 
   state = {
@@ -26,12 +20,12 @@ class Publish extends React.Component {
   };
 
   sendMessage = async () => {
-    console.log(
+    /* console.log(
       'tweeting',
       this.state.value,
       'answer to',
       this.props.messageId,
-    );
+    ); */
     const messageId = await this.context.wallet.sendMessage(
       this.state.value,
       this.props.messageId,
@@ -45,23 +39,26 @@ class Publish extends React.Component {
       <StyledBox>
         <div
           style={{
-            flexGrow: 1,
+            width: '100%',
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'flex-start',
           }}
         >
-          <A href="/profile">
+          <Link href="/profile">
             <Avatar src="../../images/defaultuser.png" alt="User Profile Pic" />
-          </A>
+          </Link>
           <div style={{ flexGrow: 1 }}>
             <div>
-              <Button color="primary">Tweet</Button>
-              <Button href="/post">Post</Button>
+              <Button color="primary">
+                <FormattedMessage {...messages.tweet} />
+              </Button>
+              <Button href="/post">
+                <FormattedMessage {...messages.post} />
+              </Button>
             </div>
             <textarea
               rows="4"
-              style={{}}
               id="newMessage"
               placeholder="What's on your mind..."
               onChange={e => this.setState({ value: e.target.value })}
@@ -79,7 +76,7 @@ class Publish extends React.Component {
           </div>
         </div>
 
-        <ButtonBar>
+        <ButtonBar style={{ alignSelf: 'flex-end' }}>
           <FaCode
             style={{ color: 'grey', fontSize: '1.2rem', marginRight: 12 }}
           />
@@ -92,5 +89,10 @@ class Publish extends React.Component {
     );
   }
 }
+
+PublishBox.propTypes = {
+  messageId: PropTypes.number,
+  publishCallback: PropTypes.func,
+};
 
 export default PublishBox;

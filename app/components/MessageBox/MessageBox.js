@@ -1,23 +1,18 @@
-import React, { useContext } from 'react';
-import { FormattedMessage } from 'react-intl';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import ReactMarkdown from 'react-markdown';
-import { FaImages, FaCode, FaRegComments } from 'react-icons/fa';
+import { FaRegComments } from 'react-icons/fa';
 import { AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
-import { GiPayMoney, GiTakeMyMoney } from 'react-icons/gi';
+
 import { MdAttachMoney } from 'react-icons/md';
 import Button from '@material-ui/core/Button';
 import Modal from 'react-modal';
-import { useHistory } from 'react-router-dom';
-import style from './markdown-styles.module.css';
 
-import Img from './Img';
 import ActionIcons from './ActionIcons';
 
-import DefaultUser from '../../images/defaultuser.png';
 import CloutContext from '../../cloutContext';
-import StyledBox from './StyledBox';
 import PublishBox from '../PublishBox/PublishBox';
+import Message from './Message';
 
 const customStyles = {
   content: {
@@ -44,12 +39,14 @@ class MessageBox extends React.Component {
   };
 
   toggleModal = () => {
-    this.setState({ isCommentModalOpen: !this.state.isCommentModalOpen });
+    this.setState(prevState => ({
+      isCommentModalOpen: !prevState.isCommentModalOpen,
+    }));
   };
 
   displayMessage = () => {
     const target = `/m/${this.props.messageId}`;
-    if (this.context.history.location.pathname != target)
+    if (this.context.history.location.pathname !== target)
       this.context.history.push(`/m/${this.props.messageId}`);
   };
 
@@ -61,14 +58,13 @@ class MessageBox extends React.Component {
   };
 
   RenderInterations = () => {
-    const tipTotal =
-      (this.state.hasTipped
-        ? this.state.tips
-          ? this.state.tips.total
-          : 0
-        : this.props.tips
-        ? this.props.tips.total
-        : 0) / 1000000000000000000;
+    let tipTotal;
+    if (this.state.hasTipped)
+      tipTotal = this.state.tips ? this.state.tips.total : 0;
+    else
+      tipTotal =
+        (this.props.tips ? this.props.tips.total : 0) / 1000000000000000000;
+
     return (
       <div
         id="messagesInteractions"
@@ -157,57 +153,14 @@ class MessageBox extends React.Component {
   }
 }
 
-class Message extends React.Component {
-  render() {
-    return (
-      <StyledBox>
-        <a href="/profile" style={{}}>
-          <div
-            className="postHeader"
-            id="messageContentHeader"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexGrow: 1,
-              flexDirection: 'row',
-            }}
-          >
-            <Img src={DefaultUser} alt="react-boilerplate - Logo" />
-
-            <span
-              style={{
-                marginLeft: 4,
-                fontWeight: 'bold',
-                fontSize: '0.9rem',
-                textDecoration: 'none',
-              }}
-            >
-              Brick Stone Paper
-            </span>
-            <span style={{ marginLeft: 4, color: 'grey', fontSize: '0.9rem' }}>
-              @BrickPaper
-            </span>
-            <span style={{ marginLeft: 4, color: 'grey', fontSize: '0.9rem' }}>
-              . Jul 7
-            </span>
-          </div>
-        </a>
-        <div style={{ flexGrow: 1 }} onClick={this.props.displayMessage}>
-          <div
-            style={{ marginTop: 4, marginBottom: 4 }}
-            className="reactMarkDown"
-          >
-            <ReactMarkdown
-              children={this.props.message}
-              className={style.reactMarkDown}
-            />
-          </div>
-
-          {this.props.interactions}
-        </div>
-      </StyledBox>
-    );
-  }
-}
+MessageBox.propTypes = {
+  messageId: PropTypes.number,
+  tips: PropTypes.array,
+  comments: PropTypes.array,
+  emphasize: PropTypes.bool,
+  ownerName: PropTypes.string,
+  message: PropTypes.array,
+  publishCallback: PropTypes.func,
+};
 
 export default MessageBox;

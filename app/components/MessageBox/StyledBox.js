@@ -10,7 +10,6 @@ export default styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   padding: 0.5em;
-  flex-grow: 1;
   flex-direction: column;
   border-bottom: 1px solid #f0f0f0;
 `;

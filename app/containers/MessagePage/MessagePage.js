@@ -1,36 +1,45 @@
 /*
- * FeedPage
- *
- * This is the first thing users see of our App, at the '/' route
+ * Displays a message and the comments
  */
 
-import React, { useEffect, memo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
-import { useParams } from 'react-router-dom';
 
 import { StyledBox } from 'components/MessageBox';
+import Button from '@material-ui/core/Button';
 import messages from './messages';
 import MessageComments from './MessageComments';
 import CloutContext from '../../cloutContext';
-
-const key = 'feed';
 
 class MessagePage extends React.Component {
   static contextType = CloutContext;
 
   render() {
     return (
-	    <div style={{	borderRight: "1px solid lightgrey", borderLeft: "1px solid lightgrey" }}>
-			<StyledBox>
-				<h2 style={{ padding: 12, margin: 0 }}><span onClick={() => this.context.history.goBack() } >&#8592;</span> Post</h2>
-			</StyledBox>
+      <div
+        style={{
+          borderRight: '1px solid lightgrey',
+          borderLeft: '1px solid lightgrey',
+        }}
+      >
+        <StyledBox>
+          <h2 style={{ padding: 12, margin: 0 }}>
+            <Button onClick={() => this.context.history.goBack()}>
+              &#8592;
+            </Button>{' '}
+            <FormattedMessage {...messages.header} />
+          </h2>
+        </StyledBox>
 
-			<MessageComments messageId={this.props.match.params.msgId} />
-		</div>
-		);
-	}
+        <MessageComments messageId={this.props.match.params.msgId} />
+      </div>
+    );
+  }
 }
+
+MessagePage.propTypes = {
+  match: PropTypes.array,
+};
 
 export default MessagePage;

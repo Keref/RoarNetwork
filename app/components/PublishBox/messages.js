@@ -5,15 +5,15 @@
  */
 import { defineMessages } from 'react-intl';
 
-export const scope = 'boilerplate.components.Header';
+export const scope = 'boilerplate.components.PublishBox';
 
 export default defineMessages({
-  home: {
-    id: `${scope}.home`,
-    defaultMessage: 'Home',
+  tweet: {
+    id: `${scope}.tweet`,
+    defaultMessage: 'Tweet',
   },
-  features: {
-    id: `${scope}.features`,
-    defaultMessage: 'Features',
+  post: {
+    id: `${scope}.post`,
+    defaultMessage: 'Post',
   },
 });

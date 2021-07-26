@@ -1,4 +1,6 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
+
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
@@ -10,10 +12,10 @@ import DraftsIcon from '@material-ui/icons/Drafts';
 import CreateIcon from '@material-ui/icons/Create';
 import Toolbar from '@material-ui/core/Toolbar';
 import SearchIcon from '@material-ui/icons/Search';
-import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Link from '@material-ui/icons/Link';
+
+import messages from './messages';
 
 import LoginModal from '../LoginModal/LoginModal';
 
@@ -89,7 +91,7 @@ export default function Header() {
         <MenuIcon />
       </IconButton>
 
-      <Link
+      <Button
         component="h2"
         variant="h5"
         color="inherit"
@@ -97,8 +99,8 @@ export default function Header() {
         noWrap
         className={classes.toolbarTitle}
       >
-        Roar
-      </Link>
+        <FormattedMessage {...messages.title} />
+      </Button>
 
       <IconButton>
         <SearchIcon />
@@ -158,8 +160,7 @@ class LoginButton extends React.Component {
   };
 
   toggleLogin = () => {
-    console.log('togglesdf');
-    this.setState({ isLoginVisible: !this.state.isLoginVisible });
+    this.setState(prevState => ({ isLoginVisible: !prevState.isLoginVisible }));
   };
 
   render() {
