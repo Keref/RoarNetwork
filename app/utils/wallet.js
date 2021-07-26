@@ -31,11 +31,11 @@ class Wallet {
 
   myProfileAddress;
 
-  messagesAddress = '0x2d990ce5393a7E287Ed54D7794aE53c55B262d88';
+  messagesAddress = '0xC0977bfA44719b9D31a87B853A3Bed5a43Ca9A6F';
 
-  profileFactoryAddress = '0x88588DF25C89eBe0b67446F1Cd27AE9312C7d46D';
+  profileFactoryAddress = '0x1fBEB810c3ca6e3e5375B553EfdbC20E1c43937F';
 
-  interactionTipsAddress = '0x0aA5bA7eCe0D30715B061F02CFE4FceCf69C295d';
+  interactionTipsAddress = '0x2BFfFB5BEFbD440f08Ce769252Da1A63495D8A0B';
 
   messagesContract;
 
@@ -56,7 +56,6 @@ class Wallet {
   		new Web3.providers.HttpProvider('http://127.0.0.1:8545'),
   	);
   	// this.connectToRPCAccount();
-
   	this.messagesContract = new this.web3.eth.Contract(
   		MessagesABI,
   		this.messagesAddress,
@@ -82,7 +81,7 @@ class Wallet {
   	this.address = mnemonicWallet.address;
   	this.myAccount = mnemonicWallet.address;
   	this.updateProfile(username, mnemonicWallet.address);
-
+	
   	this.getOrSetProfile();
   }
 
@@ -133,8 +132,8 @@ class Wallet {
   		.getProfile(this.username)
   		.call(async (err, address) => {
   			if (err) console.log(err);
-
-  			if (address === 0) {
+			console.log('sdfsfdsd', address, address === "0x0000000000000000000000000000000000000000"  )
+  			if (address === "0x0000000000000000000000000000000000000000") {
   				this.profileFactoryContract.methods
   					.deployNewProfile(this.username)
   					.send({ from: this.myAccount, gas: this.maxGas })

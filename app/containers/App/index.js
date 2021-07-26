@@ -17,7 +17,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 import FeedPage from 'containers/FeedPage/Loadable';
 import PostPage from 'containers/PostPage/Loadable';
-import FeaturePage from 'containers/FeaturePage/Loadable';
 import MessagePage from 'containers/MessagePage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import DocPage from 'containers/DocPage/Loadable';
@@ -69,7 +68,6 @@ class MainDiv extends React.Component {
           <Switch>
             <Route exact path="/" component={FeedPage} />
             <Route exact path="/post" component={PostPage} />
-            <Route path="/features" component={FeaturePage} />
             <Route exact path="/m/:msgId" component={MessagePage} />
             <Route exact path="/u/:userHandle" component={ProfilePage} />
 

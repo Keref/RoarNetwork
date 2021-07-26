@@ -51,7 +51,7 @@ exports.postLogin = async (req, res, next) => {
     if (err) {
       return next(err);
     }
-    console.log('Atuh local and stuff');
+
     if (!user) {
       if (req.headers.accept == 'application/json') {
         console.log('app failed to login');
@@ -60,7 +60,6 @@ exports.postLogin = async (req, res, next) => {
       return res.redirect('/login');
     }
     req.logIn(user, err => {
-      console.log('alright logged in');
       if (err) {
         return next(err);
       }

@@ -5,9 +5,9 @@ const { ProfileABI } = require('../ABI/ProfileABI');
 const { ProfileFactoryABI } = require('../ABI/ProfileFactoryABI');
 const { InteractionTipsABI } = require('../ABI/InteractionTipsABI');
 
-const messagesAddress = '0x2d990ce5393a7E287Ed54D7794aE53c55B262d88';
-const profileFactoryAddress = '0x88588DF25C89eBe0b67446F1Cd27AE9312C7d46D';
-const interactionTipsAddress = '0x0aA5bA7eCe0D30715B061F02CFE4FceCf69C295d';
+const messagesAddress = '0xC0977bfA44719b9D31a87B853A3Bed5a43Ca9A6F';
+const profileFactoryAddress = '0x1fBEB810c3ca6e3e5375B553EfdbC20E1c43937F';
+const interactionTipsAddress = '0x2BFfFB5BEFbD440f08Ce769252Da1A63495D8A0B';
 
 /**
  * Web3 query functions. Not meant to send transactions
@@ -95,9 +95,8 @@ exports.getProfile = async (req, res) => {
 
   const desc = await profileContract.methods.description().call();
   const owner = await profileContract.methods.owner().call();
-  const lifetimeDividends = await profileContract.methods
-    .lifetimeDividends()
-    .call();
+  const lifetimeDividends = await profileContract.methods.lifetimeDividends().call();
+  const founderReward = await profileContract.methods.founderReward().call();
 
   const tokenSupply = await profileContract.methods.totalSupply().call();
   const tokenValue = await web3.eth.getBalance(
@@ -114,6 +113,7 @@ exports.getProfile = async (req, res) => {
     tokenSupply,
     tokenValue,
     lifetimeDividends,
+	founderReward,
     profileAddress,
     profilePicture: '/images/defaultprofile.png',
   };

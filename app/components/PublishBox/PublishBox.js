@@ -11,12 +11,15 @@ import ButtonBar from './ButtonBar';
 import messages from './messages';
 import CloutContext from '../../cloutContext';
 import StyledBox from '../MessageBox/StyledBox';
+import MessageBox from '../MessageBox/MessageBox';
+import roarAPI from '../../utils/api';
 
 class PublishBox extends React.Component {
   static contextType = CloutContext;
 
   state = {
     value: '',
+	items: [],
   };
 
   sendMessage = async () => {
@@ -31,11 +34,19 @@ class PublishBox extends React.Component {
       this.props.messageId,
     );
 
+	//display the post directly below too for now
+	const item = await roarAPI.getMessage(messageId);
+	const { items } = this.state;
+	items.push(item);
+
+	this.setState({ items });
+	//also call callback as feed should be in charge
     if (this.props.publishCallback) this.props.publishCallback(messageId);
   };
 
   render() {
     return (
+	<div>
       <StyledBox>
         <div
           style={{
@@ -86,6 +97,18 @@ class PublishBox extends React.Component {
           <Button onClick={() => this.sendMessage()}>Submit</Button>
         </ButtonBar>
       </StyledBox>
+	  {this.state.items.map(item => (
+		<MessageBox
+			key={item.id}
+			message={item.URI}
+			replyTo={item.replyId}
+			comments={item.comments}
+			messageId={item.id}
+			ownerName={item.ownerName}
+			tips={item.tips}
+		/>
+	  ))}
+	</div>
     );
   }
 }

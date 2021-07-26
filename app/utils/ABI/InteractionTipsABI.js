@@ -80,6 +80,7 @@ const InteractionTipsABI = [
       "type": "function"
     }
   ]
- 
+
+  
  
 export default InteractionTipsABI;

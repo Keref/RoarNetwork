@@ -91,7 +91,7 @@ export default function Header() {
         <MenuIcon />
       </IconButton>
 
-      <Button className={classes.toolbarTitle}>
+      <Button className={classes.toolbarTitle} href="/" >
         <FormattedMessage {...messages.title} />
       </Button>
 
@@ -129,7 +129,7 @@ export default function Header() {
           <ListItemText primary="Groups" />
         </StyledMenuItem>
 
-        <StyledMenuItem>
+        <StyledMenuItem component="a" href="/profile">
           <ListItemIcon>
             <CreateIcon fontSize="small" />
           </ListItemIcon>
