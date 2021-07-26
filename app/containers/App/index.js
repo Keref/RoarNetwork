@@ -8,8 +8,12 @@
 
 import React, { useContext } from 'react';
 import { Helmet } from 'react-helmet';
-import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
+
+import styled, { ThemeProvider } from 'styled-components';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 import FeedPage from 'containers/FeedPage/Loadable';
 import PostPage from 'containers/PostPage/Loadable';
@@ -18,34 +22,32 @@ import MessagePage from 'containers/MessagePage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import DocPage from 'containers/DocPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
-import LeftBar from 'components/LeftBar/LeftBar';
-import Footer from 'components/Footer';
+
+import Container from '@material-ui/core/Container';
+
+import Header from 'components/Header/Header';
+
 import CloutContext from '../../cloutContext';
 
 import GlobalStyle from '../../global-styles';
 
-// max-width: calc(768px + 16px * 2);
-const AppWrapper = styled.div`
-  margin: 0 auto;
-  display: flex;
-  min-height: 100%;
-  padding: 0 16px;
-  flex-direction: column;
-  align-items: center;
-`;
+const useStyles = makeStyles(theme => ({
+  mainGrid: {
+    marginTop: theme.spacing(3),
+  },
+}));
 
 export default function App() {
   // const appState = useContext(CloutContext);
-
+  const classes = useStyles();
   return (
-    <AppWrapper className="wrapper">
+    <React.Fragment>
       <Helmet titleTemplate="%s - Roar.Network" defaultTitle="Roar.Network">
         <meta name="description" content="Roar.Network" />
       </Helmet>
-      <MainDiv />
-      <Footer />
-      <GlobalStyle />
-    </AppWrapper>
+
+      <MainDiv classes={classes} />
+    </React.Fragment>
   );
 }
 
@@ -60,9 +62,10 @@ class MainDiv extends React.Component {
     )
       width = 900;
     return (
-      <div style={{ display: 'flex', overflow: 'hidden', height: 'auto' }}>
-        <LeftBar />
-        <div style={{ width, overflow: 'auto' }}>
+      <Container maxWidth="lg" style={{ height: 'auto' }}>
+        <Header />
+
+        <Container maxWidth="md">
           <Switch>
             <Route exact path="/" component={FeedPage} />
             <Route exact path="/post" component={PostPage} />
@@ -75,8 +78,8 @@ class MainDiv extends React.Component {
 
             <Route path="" component={NotFoundPage} />
           </Switch>
-        </div>
-      </div>
+        </Container>
+      </Container>
     );
   }
 }

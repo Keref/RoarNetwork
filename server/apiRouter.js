@@ -1,13 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-const apiController = require('./apiController');
+const apiController = require('./controllers/api');
 
-
-router.get('/', apiController.getAppInfo); 
-router.get('/getMessage/:id', apiController.getMessage); 
-router.get('/getProfile/:handle', apiController.getProfile)
-
-
+router.get('/', apiController.getAppInfo);
+router.get('/getMessage/:id', apiController.getMessage);
+router.get('/getProfile/:handle', apiController.getProfile);
 
 module.exports = router;

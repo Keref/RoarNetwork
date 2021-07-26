@@ -17,7 +17,7 @@ import FontFaceObserver from 'fontfaceobserver';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
 // import 'bootstrap/dist/css/bootstrap.min.css';
-import 'milligram/dist/milligram.css';
+// import 'milligram/dist/milligram.css';
 
 // Import root app
 import App from 'containers/App';
@@ -59,19 +59,20 @@ const render = messages => {
 };
 
 class MainApp extends React.Component {
-  state = {
-    userName: 'Plip',
-    address: '0x00000000000000000',
-    userSeed: '',
-    userPrivateKey: '',
-    wallet,
-    history,
-    updateProfile: this.updateProfile,
-  };
+  constructor() {
+    super();
+    this.state = {
+      username: '',
+      address: '',
+      wallet,
+      history,
+      updateProfile: this.updateProfile,
+    };
+  }
 
-  updateProfile = (userName, address) => {
+  updateProfile = async (username, address) => {
     // console.log('Got profile update', userName, address);
-    this.setState({ userName });
+    this.setState({ username });
     this.setState({ address });
   };
 
