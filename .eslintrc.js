@@ -23,9 +23,10 @@ module.exports = {
     },
   },
   rules: {
-    'prettier/prettier': ['error', prettierOptions],
+    //'prettier/prettier': ['error', prettierOptions],
     'arrow-body-style': [2, 'as-needed'],
     'class-methods-use-this': 0,
+	'consistent-return': 0,
     'import/imports-first': 0,
     'import/newline-after-import': 0,
     'import/no-dynamic-require': 0,
@@ -36,7 +37,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     indent: [
       2,
-      2,
+      "tab",
       {
         SwitchCase: 1,
       },
@@ -56,12 +57,15 @@ module.exports = {
     'jsx-a11y/mouse-events-have-key-events': 2,
     'jsx-a11y/role-has-required-aria-props': 2,
     'jsx-a11y/role-supports-aria-props': 2,
+	'func-names': 0, 
     'max-len': 0,
     'newline-per-chained-call': 0,
     'no-confusing-arrow': 0,
-    'no-console': 1,
+    'no-console': "off", //1 for warning 2 for error
     'no-unused-vars': 2,
     'no-use-before-define': 0,
+	"no-param-reassign": 0,
+	'no-shadow': [2, {"builtinGlobals": false, "hoist": "functions", "allow": ["err", "token", ]}],
     'prefer-template': 2,
     'react/destructuring-assignment': 0,
     'react-hooks/rules-of-hooks': 'error',
