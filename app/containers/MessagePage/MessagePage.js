@@ -16,30 +16,30 @@ class MessagePage extends React.Component {
   static contextType = CloutContext;
 
   render() {
-    return (
-      <div
-        style={{
-          borderRight: '1px solid lightgrey',
-          borderLeft: '1px solid lightgrey',
-        }}
-      >
-        <StyledBox>
-          <h2 style={{ padding: 12, margin: 0 }}>
-            <Button onClick={() => this.context.history.goBack()}>
+  	return (
+  		<div
+  			style={{
+  				borderRight: '1px solid lightgrey',
+  				borderLeft: '1px solid lightgrey',
+  			}}
+  		>
+  			<StyledBox>
+  				<h2 style={{ padding: 12, margin: 0 }}>
+  					<Button onClick={() => this.context.history.goBack()}>
               &#8592;
-            </Button>{' '}
-            <FormattedMessage {...messages.header} />
-          </h2>
-        </StyledBox>
+  					</Button>{' '}
+  					<FormattedMessage {...messages.header} />
+  				</h2>
+  			</StyledBox>
 
-        <MessageComments messageId={this.props.match.params.msgId} />
-      </div>
-    );
+  			<MessageComments messageId={this.props.match.params.msgId} />
+  		</div>
+  	);
   }
 }
 
 MessagePage.propTypes = {
-  match: PropTypes.array,
+	match: PropTypes.object,
 };
 
 export default MessagePage;
