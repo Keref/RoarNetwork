@@ -16,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ExitIcon from '@material-ui/icons/ExitToApp';
 
+import LocaleToggle from 'containers/LocaleToggle';
 import messages from './messages';
 import CloutContext from '../../cloutContext';
 
@@ -98,11 +99,13 @@ export default function Header() {
 				<FormattedMessage {...messages.title} />
 			</Button>
 
+			<LocaleToggle />
+			
 			<IconButton>
 				<SearchIcon />
 			</IconButton>
 
-			{appState.address == '' ? <LoginButton /> : <></>}
+			{appState.address === '' ? <LoginButton /> : <></>}
 
 			<StyledMenu
 				id="customized-menu"
