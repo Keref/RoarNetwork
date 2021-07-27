@@ -102,7 +102,7 @@ export default function Header() {
 				<SearchIcon />
 			</IconButton>
 
-			{appState.address == '' ? <LoginButton /> : <></>}
+			{appState.address === '' ? <LoginButton /> : <></>}
 
 			<StyledMenu
 				id="customized-menu"
@@ -132,7 +132,7 @@ export default function Header() {
 					<ListItemText primary="Groups" />
 				</StyledMenuItem>
 
-				<StyledMenuItem component="a" href="/profile">
+				<StyledMenuItem component="a" href={`/u/${appState.username}`} >
 					<ListItemIcon>
 						<CreateIcon fontSize="small" />
 					</ListItemIcon>
