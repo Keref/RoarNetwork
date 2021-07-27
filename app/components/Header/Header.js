@@ -146,6 +146,13 @@ export default function Header() {
 					<ListItemText primary="Docs" />
 				</StyledMenuItem>
 
+				<StyledMenuItem component="a" href="/settings">
+					<ListItemIcon>
+						<CreateIcon fontSize="small" href="/settings" />
+					</ListItemIcon>
+					<ListItemText primary="Settings" />
+        		</StyledMenuItem>
+
 				<StyledMenuItem component="a" href="/logout" >
 					<ListItemIcon>
 						<ExitIcon fontSize="small" />

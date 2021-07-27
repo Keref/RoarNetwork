@@ -18,6 +18,7 @@ import PostPage from 'containers/PostPage/Loadable';
 import MessagePage from 'containers/MessagePage/Loadable';
 import ProfilePage from 'containers/ProfilePage/Loadable';
 import DocPage from 'containers/DocPage/Loadable';
+import SettingsPage from 'containers/SettingsPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Header from 'components/Header/Header';
 
@@ -68,6 +69,8 @@ class MainDiv extends React.Component {
 
   					<Route exact path="/docs" component={DocPage} />
   					<Route exact path="/docs/:docPage" component={DocPage} />
+
+					<Route exact path="/settings" component={SettingsPage} />
 
   					<Route path="" component={NotFoundPage} />
   				</Switch>
