@@ -29,12 +29,6 @@ passport.use(
 	new LocalStrategy(
 		{ passReqToCallback: true },
 		(req, username, password, done) => {
-			console.log(
-				'login in, testing login ass code',
-				username,
-				password,
-				req.body.code,
-			);
 			User.findOne({ username }, (err, user) => {
 				if (err) {
 					return done(err);
@@ -82,23 +76,23 @@ passport.use(new BearerStrategy(
  */
 exports.isAuthenticated = (req, res, next) => {
 	if (req.isAuthenticated()) {
-		// console.log(req.user.locked)
-		if (req.user.locked.blacklisted) {
+		/* if (req.user.locked.blacklisted) {
 			req.session.destroy(function(err) {
 				console.log(err);
 				return res
 					.status(401)
 					.json({ status: 'error', message: 'NOT_LOGGED_IN' });
 			});
-		} else return next();
-	} else {
-		// not logged in
-		if (req.headers.accept === 'application/json')
-			return res
-				.status(401)
-				.json({ status: 'error', message: 'NOT_LOGGED_IN' });
-		return res.redirect('/login');
-	}
+		} else */
+		return next();
+	} 
+	// not logged in
+	if (req.headers.accept === 'application/json')
+		return res
+			.status(401)
+			.json({ status: 'error', message: 'NOT_LOGGED_IN' });
+	return res.redirect('/login');
+	
 };
 
 /**

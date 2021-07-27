@@ -18,104 +18,104 @@ class PublishBox extends React.Component {
   static contextType = CloutContext;
 
   state = {
-    value: '',
-	items: [],
+  	value: '',
+  	items: [],
   };
 
   sendMessage = async () => {
-    /* console.log(
+  	/* console.log(
       'tweeting',
       this.state.value,
       'answer to',
       this.props.messageId,
     ); */
-    const messageId = await this.context.wallet.sendMessage(
-      this.state.value,
-      this.props.messageId,
-    );
+  	const messageId = await this.context.wallet.sendMessage(
+  		this.state.value,
+  		this.props.messageId,
+  	);
 
-	//display the post directly below too for now
-	const item = await roarAPI.getMessage(messageId);
-	const { items } = this.state;
-	items.push(item);
+  	// display the post directly below too for now
+  	const item = await roarAPI.getMessage(messageId);
+  	const { items } = this.state;
+  	items.push(item);
 
-	this.setState({ items });
-	//also call callback as feed should be in charge
-    if (this.props.publishCallback) this.props.publishCallback(messageId);
+  	this.setState({ items });
+  	// also call callback as feed should be in charge
+  	if (this.props.publishCallback) this.props.publishCallback(messageId);
   };
 
   render() {
-    return (
-	<div>
-      <StyledBox>
-        <div
-          style={{
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-          }}
-        >
-          <Link href="/profile">
-            <Avatar src="../../images/defaultuser.png" alt="User Profile Pic" />
-          </Link>
-          <div style={{ flexGrow: 1 }}>
-            <div>
-              <Button color="primary">
-                <FormattedMessage {...messages.tweet} />
-              </Button>
-              <Button href="/post">
-                <FormattedMessage {...messages.post} />
-              </Button>
-            </div>
-            <textarea
-              rows="4"
-              id="newMessage"
-              placeholder="What's on your mind..."
-              onChange={e => this.setState({ value: e.target.value })}
-              value={this.state.value}
-              style={{
-                boxSizing: 'border-box',
-                height: '100%',
-                border: '1px solid lightgrey',
-                width: '100%',
-                resize: 'none',
-                borderRadius: 4,
-                padding: 4,
-              }}
-            />
-          </div>
-        </div>
+  	return (
+  		<div>
+  			<StyledBox>
+  				<div
+  					style={{
+  						width: '100%',
+  						display: 'flex',
+  						flexDirection: 'row',
+  						alignItems: 'flex-start',
+  					}}
+  				>
+  					<Link href="/profile">
+  						<Avatar src="../../images/defaultuser.png" alt="User Profile Pic" />
+  					</Link>
+  					<div style={{ flexGrow: 1 }}>
+  						<div>
+  							<Button color="primary">
+  								<FormattedMessage {...messages.tweet} />
+  							</Button>
+  							<Button href="/post">
+  								<FormattedMessage {...messages.post} />
+  							</Button>
+  						</div>
+  						<textarea
+  							rows="4"
+  							id="newMessage"
+  							placeholder="What's on your mind..."
+  							onChange={e => this.setState({ value: e.target.value })}
+  							value={this.state.value}
+  							style={{
+  								boxSizing: 'border-box',
+  								height: '100%',
+  								border: '1px solid lightgrey',
+  								width: '100%',
+  								resize: 'none',
+  								borderRadius: 4,
+  								padding: 4,
+  							}}
+  						/>
+  					</div>
+  				</div>
 
-        <ButtonBar style={{ alignSelf: 'flex-end' }}>
-          <FaCode
-            style={{ color: 'grey', fontSize: '1.2rem', marginRight: 12 }}
-          />
-          <FaImages
-            style={{ color: 'grey', fontSize: '1.2rem', marginRight: 12 }}
-          />
-          <Button onClick={() => this.sendMessage()}>Submit</Button>
-        </ButtonBar>
-      </StyledBox>
+  				<ButtonBar style={{ alignSelf: 'flex-end' }}>
+  					<FaCode
+  						style={{ color: 'grey', fontSize: '1.2rem', marginRight: 12 }}
+  					/>
+  					<FaImages
+  						style={{ color: 'grey', fontSize: '1.2rem', marginRight: 12 }}
+  					/>
+  					<Button onClick={() => this.sendMessage()}>Submit</Button>
+  				</ButtonBar>
+  			</StyledBox>
 	  {this.state.items.map(item => (
-		<MessageBox
-			key={item.id}
-			message={item.URI}
-			replyTo={item.replyId}
-			comments={item.comments}
-			messageId={item.id}
-			ownerName={item.ownerName}
-			tips={item.tips}
-		/>
+  				<MessageBox
+  					key={item.id}
+  					message={item.URI}
+  					replyTo={item.replyId}
+  					comments={item.comments}
+  					messageId={item.id}
+  					ownerName={item.ownerName}
+  					tips={item.tips}
+  				/>
 	  ))}
-	</div>
-    );
+  		</div>
+  	);
   }
 }
 
 PublishBox.propTypes = {
-  messageId: PropTypes.string,
-  publishCallback: PropTypes.func,
+	messageId: PropTypes.string,
+	publishCallback: PropTypes.func,
 };
 
 export default PublishBox;

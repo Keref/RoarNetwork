@@ -1,40 +1,19 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import messages from './messages';
-import CloutContext from '../../cloutContext';
 import StyledBox from '../MessageBox/StyledBox';
-import LoginModal from '../LoginModal/LoginModal';
+import LoginButton from '../LoginButton/LoginButton';
 
-class WelcomeBox extends React.Component {
-  state = {
-    isLoginOpen: false,
-  };
+export default function WelcomeBox () {
+  	return (
+  		<StyledBox>
+  			<h2><FormattedMessage {...messages.welcome} /></h2>
 
-  toggleLogin = () => {
-    this.setState({ isLoginOpen: !this.state.isLoginOpen });
-  };
+  			<Typography><FormattedMessage {...messages.content} /></Typography>
 
-  render() {
-    return (
-      <StyledBox>
-        <h2>Welcome</h2>
-
-        <Typography>This is a great news</Typography>
-
-        <Button variant="contained" color="primary" href="/login">
-          Login
-        </Button>
-
-        <LoginModal
-          toggle={this.toggleLogin}
-          isVisible={this.state.isLoginOpen}
-        />
-      </StyledBox>
-    );
-  }
+  			<LoginButton />
+  		</StyledBox>
+  	);
 }
-
-export default WelcomeBox;

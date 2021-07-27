@@ -1,6 +1,6 @@
 import Web3 from 'web3';
 import { ethers } from 'ethers';
-// import roarAPI from './api';
+import roarAPI from './api';
 import MessagesABI from './ABI/MessagesABI';
 import ProfileABI from './ABI/ProfileABI';
 import ProfileFactoryABI from './ABI/ProfileFactoryABI';
@@ -132,8 +132,13 @@ class Wallet {
   		.getProfile(this.username)
   		.call(async (err, address) => {
   			if (err) console.log(err);
-			console.log('sdfsfdsd', address, address === "0x0000000000000000000000000000000000000000"  )
+  			console.log('sdfsfdsd', address, address === "0x0000000000000000000000000000000000000000"  )
   			if (address === "0x0000000000000000000000000000000000000000") {
+  				// no profile, need to create, but do we have eth? if no request airdrop
+				
+  				await roarAPI.getAirdrop();
+  				/* let bal = await this.web3.eth.getBalance(this.address, (balance) => return balance);
+  				console.log('getBal', bal); */
   				this.profileFactoryContract.methods
   					.deployNewProfile(this.username)
   					.send({ from: this.myAccount, gas: this.maxGas })
@@ -163,9 +168,7 @@ class Wallet {
   					.call();
   			}
 
-  			this.web3.eth.getBalance(this.address, (error, res) => {
-  				this.ethBalance = res;
-  			});
+  			
   		});
   }
 
