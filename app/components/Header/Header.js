@@ -149,7 +149,7 @@ export default function Header() {
 					<ListItemText primary="Docs" />
 				</StyledMenuItem>
 
-				<StyledMenuItem component="a" href="/logout" onClick={() => { return appState.wallet.logout() } } >
+				<StyledMenuItem component="a" href="/logout" onClick={() => appState.wallet.logout() } >
 					<ListItemIcon>
 						<ExitIcon fontSize="small" />
 					</ListItemIcon>

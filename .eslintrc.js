@@ -65,7 +65,7 @@ module.exports = {
     'no-unused-vars': 2,
     'no-use-before-define': 0,
 	"no-param-reassign": 0,
-	'no-shadow': [2, {"builtinGlobals": false, "hoist": "functions", "allow": ["err", "token", ]}],
+	'no-shadow': [2, {"builtinGlobals": false, "hoist": "functions", "allow": ["err", "token", "user"]}],
     'prefer-template': 2,
     'react/destructuring-assignment': 0,
     'react-hooks/rules-of-hooks': 'error',

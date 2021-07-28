@@ -14,8 +14,6 @@ class API {
 	}
 
 	async sendRequest(requestUrl, method, params) {
-		const status = 'SUCCESS';
-		const statusCode = 200;
 
 		const result = await fetch(requestUrl, {
 			method,
@@ -24,9 +22,9 @@ class API {
 			credentials: 'include',
 		})
 			.then(async response => {
-				const result = await response.json();
-				result.statusCode = response.status;
-				return result;
+				const res = await response.json();
+				res.statusCode = response.status;
+				return res;
 			})
 			.catch(error => {
 				console.error(requestUrl, error);
@@ -38,11 +36,11 @@ class API {
 
 	// Helpers
 	async getRequest(requestUrl, params) {
-		return await this.sendRequest(requestUrl, 'GET', params);
+		return this.sendRequest(requestUrl, 'GET', params);
 	}
 
 	async postRequest(requestUrl, params) {
-		return await this.sendRequest(requestUrl, 'POST', params);
+		return this.sendRequest(requestUrl, 'POST', params);
 	}
 
   /*
@@ -88,7 +86,7 @@ class API {
   	return profile;
   };
 
-    /**
+  /**
    * @dev Ask server for phone 2fa
    */
   getCode = async (params) => {

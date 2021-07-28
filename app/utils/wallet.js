@@ -118,13 +118,13 @@ class Wallet {
   	this.myAccount = '';
   	this.username = '';
   	this.profileContract = null;
-	localStorage.removeItem('RoarUserPrivateKey');
-	localStorage.removeItem('RoarUserMnemonic');
-	localStorage.removeItem('RoarUserAddress');
+  	localStorage.removeItem('RoarUserPrivateKey');
+  	localStorage.removeItem('RoarUserMnemonic');
+  	localStorage.removeItem('RoarUserAddress');
 	
   	this.updateProfile();
 	
-	return true;
+  	return true;
   }
   
   /**

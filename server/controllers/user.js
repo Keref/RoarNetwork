@@ -27,7 +27,7 @@ exports.getLogin = (req, res) => {
 exports.postLogin = async (req, res, next) => {
 	// we test login validity here then let passport just handle the session stuff
 	let user ;
-	//if login with seed signature
+	// if login with seed signature
 	if ( req.body.randomString && req.body.userAddress && req.body.userSignature ){
 		try {
 			const msg = `${req.body.randomString}.ROAR.${req.body.userAddress}`;
@@ -39,7 +39,7 @@ exports.postLogin = async (req, res, next) => {
 			if (!user) {
 				user = new User({
 					address: req.body.userAddress,
-					username: req.body.userAddress.substring(0, 20),
+					username: req.body.userAddress.substring(2, 14),
 				});
 				await user.save();
 			}
@@ -56,12 +56,13 @@ exports.postLogin = async (req, res, next) => {
 	else {
 		return res.status(401).json({status: 'error'})
 	}
-	//passport expects those values or will throw "missing credentials"
+	// passport expects those values or will throw "missing credentials"
 	req.body.username = user.username;
 	req.body.password = 'dummy4515465565464';
 	
+	/* eslint no-unused-vars: 0 */
 	passport.authenticate('local', (err, user, info) => {
-		//console.log('plip', err, user, info);
+		// console.log('plip', err, user, info);
 		if (err) {
 			return next(err);
 		}
@@ -106,19 +107,20 @@ exports.prepareLoginPhone = async (req, res, next) => {
 			user.mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
 			const wallet = ethers.Wallet.fromMnemonic(user.mnemonic);
 			user.address = wallet.address;
-			user.username = user.address.substring(0,14);
+			user.username = user.address.substring(2,14);
 			
 		}
-		user.phone2fa = 6666; //Math.floor(Math.random()*9000) + 1000;
+		user.phone2fa = 6666; // Math.floor(Math.random()*9000) + 1000;
 		await user.save();
-		//send sms
+		// send sms
 		console.log('Sending token by SMS');
 
-		var message = "【BIBO】您的验证码是"+code+"。如非本人操作，请忽略本短信，千万不要将验证码告诉任何人"
+		const message = `【BIBO】您的验证码是${user.phone2fa}。如非本人操作，请忽略本短信，千万不要将验证码告诉任何人`
 		console.log("USDERSMSS", message)
-		//messageBot.messageSMS(user, message, code)
+		// messageBot.messageSMS(user, message, user.phone2fa)
+		messageBot.check()
 		
-		//generate 4 nums code and return success
+		// generate 4 nums phone2fa and return success
 		return res.json({status: 'success' })
 	} catch (err) {
 		return res.json({ status: 'error' });
