@@ -121,6 +121,15 @@ class Wallet {
 
   	this.updateProfile();
   }
+  
+  /**
+   * @dev Update self token balance and Eth balance
+   */
+  async updateBalances() {
+  	this.balance = await this.profileContract.methods.balanceOf(this.address).call();
+  	this.ethBalance = await this.web3.eth.getBalance(this.address, (balance) => balance);
+  }
+  
 
   /**
    * @dev getOrSetProfile
@@ -142,30 +151,19 @@ class Wallet {
   				this.profileFactoryContract.methods
   					.deployNewProfile(this.username)
   					.send({ from: this.myAccount, gas: this.maxGas })
-  				// .on('transactionHash', function(receipt) {})
   					.on('receipt', function(receipt) {
-  						// console.log('Success creating profile');
-  						// console.log(receipt);
   						const profileEvent = receipt.events.ProfileCreated;
   						this.myProfileAddress = profileEvent.returnValues.tokenAddress;
-  						this.profileContract = new this.web3.eth.Contract(
-  							ProfileABI,
-  							this.myProfileAddress,
-  						);
+  						this.profileContract = new this.web3.eth.Contract(ProfileABI, this.myProfileAddress);
+  						this.updateBalances();
   					})
   					.on('error', function(error) {
   						console.log(error);
   					});
   			} else {
   				this.myProfileAddress = address;
-
-  				this.profileContract = new this.web3.eth.Contract(
-  					ProfileABI,
-  					this.myProfileAddress,
-  				);
-  				this.balance = await this.profileContract.methods
-  					.balanceOf(this.address)
-  					.call();
+  				this.profileContract = new this.web3.eth.Contract(ProfileABI, this.myProfileAddress);
+  				this.updateBalances();
   			}
 
   			

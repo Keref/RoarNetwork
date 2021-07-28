@@ -22,42 +22,42 @@ import CloutContext from '../../cloutContext';
 const key = 'feed';
 
 export function FeedPage({
-  username,
-  loading,
-  error,
-  repos,
-  onSubmitForm,
-  onChangeUsername,
+	username,
+	loading,
+	error,
+	repos,
+	onSubmitForm,
+	onChangeUsername,
 }) {
-  const reposListProps = {
-    loading,
-    error,
-    repos,
-  };
+	const reposListProps = {
+		loading,
+		error,
+		repos,
+	};
 
-  const appState = useContext(CloutContext);
+	const appState = useContext(CloutContext);
 
-  return (
-    <Grid container spacing={3}>
-      <Grid item sm={12} md={8}>
-        {appState.address == '' ? <WelcomeBox /> : <PublishBox />}
-        <Feed />
-      </Grid>
+	return (
+		<Grid container spacing={3}>
+			<Grid item sm={12} md={8}>
+				{appState.address == '' ? <WelcomeBox /> : <PublishBox />}
+				<Feed ignoreComments />
+			</Grid>
 
-      <Hidden smDown>
-        <RightBar />
-      </Hidden>
-    </Grid>
-  );
+			<Hidden smDown>
+				<RightBar />
+			</Hidden>
+		</Grid>
+	);
 }
 
 FeedPage.propTypes = {
-  loading: PropTypes.bool,
-  error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
-  repos: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
-  onSubmitForm: PropTypes.func,
-  username: PropTypes.string,
-  onChangeUsername: PropTypes.func,
+	loading: PropTypes.bool,
+	error: PropTypes.oneOfType([PropTypes.object, PropTypes.bool]),
+	repos: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
+	onSubmitForm: PropTypes.func,
+	username: PropTypes.string,
+	onChangeUsername: PropTypes.func,
 };
 
 export default FeedPage;

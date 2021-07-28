@@ -13,9 +13,9 @@ const passport = require('passport');
 const dotenv = require('dotenv');
 const path = require('path');
 const mongoose = require('mongoose');
-const expressStatusMonitor = require('express-status-monitor');
+//const morgan = require('morgan')
+//const expressStatusMonitor = require('express-status-monitor');
 
-const ethers = require('ethers');
 
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -44,10 +44,7 @@ mongoose.set('useUnifiedTopology', true);
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on('error', err => {
   console.error(err);
-  console.log(
-    '%s MongoDB connection error. Please make sure MongoDB is running.',
-    chalk.red('✗'),
-  );
+  console.log('MongoDB connection error. Please make sure MongoDB is running.');
   process.exit();
 });
 
@@ -56,6 +53,9 @@ mongoose.connection.on('error', err => {
  */
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+// If you need a backend, e.g. an API, add your custom backend-specific middleware here
+// app.use('/api', myApi);
+app.use('/', express.static('public'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -78,14 +78,11 @@ app.use((req, res, next) => {
   res.locals.user = req.user;
   next();
 });
-// If you need a backend, e.g. an API, add your custom backend-specific middleware here
-// app.use('/api', myApi);
-app.use('/', express.static('public'));
 
 /**
  * Controllers (route handlers).
  */
-const apiController = require('./controllers/api');
+//const apiController = require('./controllers/api');
 const userController = require('./controllers/user');
 /**
  * Routers
@@ -98,11 +95,12 @@ const passportConfig = require('./passportConfig');
 /**
  * API routes // mobile app routes except login
  */
+//app.use(morgan('dev') );
 app.use('/api', apiRouter);
 
 app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
-app.get('/logout', userController.logout);
+app.get('/logout', passportConfig.isAuthenticated, userController.logout);
 
 /**
  * OAuth authentication routes. (Sign in)

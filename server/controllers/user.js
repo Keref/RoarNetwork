@@ -7,6 +7,7 @@ const User = require('../models/User');
  * Signup/login page
  */
 exports.getLogin = (req, res) => {
+	// console.log('req.user', req.user)
 	if (req.user) {
 		return res.json({
 			status: 'success',
@@ -29,8 +30,8 @@ exports.postLogin = async (req, res, next) => {
 	try {
 		const msg = `${req.body.randomString}.ROAR.${req.body.userAddress}`;
 		const whoSigned = ethers.utils.verifyMessage(msg, req.body.userSignature);
+		console.log('whoSigned', whoSigned, whoSigned === req.body.userAddress);
 		if ( !whoSigned === req.body.userAddress ) throw new Error("Signature error");
-		// console.log('whoSigned', whoSigned, whoSigned === req.body.userAddress);
 
 		let user = await User.findOne({ address: req.body.userAddress });
 		if (!user) {

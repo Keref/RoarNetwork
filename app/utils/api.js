@@ -21,6 +21,7 @@ class API {
 			method,
 			headers: this.createHeaders(),
 			body: JSON.stringify(params),
+			credentials: 'include',
 		})
 			.then(async response => {
 				const result = await response.json();

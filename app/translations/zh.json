@@ -15,6 +15,8 @@
   "boilerplate.components.Header.features": "Features",
   "boilerplate.components.PublishBox.tweet": "哢",
   "boilerplate.components.PublishBox.post": "文章",
-  "boilerplate.containers.PostPage.postpage.title": "写新文章",
-  "boilerplate.containers.PostPage.postpage.publish": "发布"
+  "boilerplate.containers.PostPage.title": "写新文章",
+  "boilerplate.containers.PostPage.publish": "发布",
+  "boilerplate.components.RightBar.trending": "热门话题",
+  "boilerplate.components.RightBar.suggestions": "推荐"
 }

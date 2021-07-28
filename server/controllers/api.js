@@ -91,6 +91,9 @@ exports.getProfile = async (req, res) => {
 	const profileAddress = await profileFactoryContract.methods
 		.getProfile(req.params.handle)
 		.call();
+	/* eslint eqeqeq: 1*/
+	if ( profileAddress == 0 ) return res.status(404).json({})
+		
 	const profileContract = new web3.eth.Contract(ProfileABI, profileAddress);
 
 	const desc = await profileContract.methods.description().call();
