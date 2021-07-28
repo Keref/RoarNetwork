@@ -118,8 +118,13 @@ class Wallet {
   	this.myAccount = '';
   	this.username = '';
   	this.profileContract = null;
-
+	localStorage.removeItem('RoarUserPrivateKey');
+	localStorage.removeItem('RoarUserMnemonic');
+	localStorage.removeItem('RoarUserAddress');
+	
   	this.updateProfile();
+	
+	return true;
   }
   
   /**
@@ -141,7 +146,6 @@ class Wallet {
   		.getProfile(this.username)
   		.call(async (err, address) => {
   			if (err) console.log(err);
-  			console.log('sdfsfdsd', address, address === "0x0000000000000000000000000000000000000000"  )
   			if (address === "0x0000000000000000000000000000000000000000") {
   				// no profile, need to create, but do we have eth? if no request airdrop
 				

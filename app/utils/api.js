@@ -88,6 +88,23 @@ class API {
   	return profile;
   };
 
+    /**
+   * @dev Ask server for phone 2fa
+   */
+  getCode = async (params) => {
+  	const getcode = await this.postRequest('/loginphone', params);
+  	return getcode;
+  };
+  
+  /**
+   * @dev loginWithCode
+   * @params { phone, countryCode, phone2fa }
+   */
+  loginWithCode  = async (params) => {
+  	const profile = await this.postRequest('/login', params);
+  	return profile;
+  };
+
   /**
    * @dev Ask server to logout (only destroys server session)
    */
@@ -104,6 +121,8 @@ class API {
   	console.log(airdrop);
   	return airdrop;
   };
+
+
 }
 
 // Export an instantiated class, no need to reinstantiate every time it's called somewhere

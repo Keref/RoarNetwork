@@ -6,7 +6,7 @@ import { AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
 
 import { MdAttachMoney } from 'react-icons/md';
 import Button from '@material-ui/core/Button';
-import Modal from 'react-modal';
+import Modal from '@material-ui/core/Modal';
 
 import ActionIcons from './ActionIcons';
 
@@ -130,24 +130,24 @@ class MessageBox extends React.Component {
 
   			<Modal
   				ariaHideApp={false}
-  				isOpen={this.state.isCommentModalOpen}
+  				open={this.state.isCommentModalOpen}
   				// onAfterOpen={afterOpenModal}
-  				onRequestClose={this.toggleModal}
+  				onClose={this.toggleModal}
   				style={customStyles}
   				contentLabel="Example Modal"
   			>
-  				<Button onClick={this.toggleModal} style={{ float: 'right' }}>
-            X
-  				</Button>
+				<div>
+					<Button onClick={this.toggleModal} style={{ float: 'right' }}>X</Button>
 
-  				<Message {...this.props} interactions={<></>} />
+					<Message {...this.props} interactions={<></>} />
 
-  				<span style={{ fontSize: '0.8rem' }}>Replying to @BrickPaper</span>
+					<span style={{ fontSize: '0.8rem' }}>Replying to @BrickPaper</span>
 
-  				<PublishBox
-  					messageId={this.props.messageId}
-  					publishCallback={this.publishCallback}
-  				/>
+					<PublishBox
+						messageId={this.props.messageId}
+						publishCallback={this.publishCallback}
+					/>
+				</div>
   			</Modal>
   		</div>
   	);

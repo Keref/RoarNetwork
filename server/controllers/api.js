@@ -46,7 +46,7 @@ exports.getAppInfo = async (req, res) => {
  * currently relying on asking the rpc but later will ask the DB and populate results
  */
 exports.getMessage = async (req, res) => {
-	if (!req.params.id) return res.json({ status: 'INVALID_ID' });
+	if (!req.params.id || isNaN(req.params.id) ) return res.json({ status: 'INVALID_ID' });
 	const rawMessage = await messagesContract.methods
 		.getMessage(req.params.id)
 		.call();
@@ -91,7 +91,7 @@ exports.getProfile = async (req, res) => {
 	const profileAddress = await profileFactoryContract.methods
 		.getProfile(req.params.handle)
 		.call();
-	/* eslint eqeqeq: 1*/
+	/* eslint eqeqeq: 1 */
 	if ( profileAddress == 0 ) return res.status(404).json({})
 		
 	const profileContract = new web3.eth.Contract(ProfileABI, profileAddress);

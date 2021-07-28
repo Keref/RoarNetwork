@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema(
     username: String,
     address: String, // eth address
     mnemonic: String, // mnemonic exists for users who dont login/signup with seed
+	
+	countryCode: String,
+	phone: String,
+	phone2fa: String,
     /*
 	twoFA: {
 		googleAuthToken: String,

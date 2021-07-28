@@ -18,5 +18,11 @@
   "boilerplate.containers.PostPage.title": "写新文章",
   "boilerplate.containers.PostPage.publish": "发布",
   "boilerplate.components.RightBar.trending": "热门话题",
-  "boilerplate.components.RightBar.suggestions": "推荐"
+  "boilerplate.components.RightBar.suggestions": "推荐",
+  "boilerplate.components.LoginModal.title": "登陆 / 注册",
+  "boilerplate.components.LoginModal.login": "登陆",
+  "boilerplate.components.LoginModal.log_in": "登陆",
+  "boilerplate.components.LoginModal.get_code": "取验证码",
+  "boilerplate.components.LoginModal.enter_code": "写入验证码",
+  "boilerplate.components.LoginModal.select_country": "选择国家"
 }

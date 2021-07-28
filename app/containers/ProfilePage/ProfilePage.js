@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 
 import { MessageBox, StyledBox } from 'components/MessageBox';
 import PublishBox from 'components/PublishBox/PublishBox';
-import Modal from 'react-modal';
+import Modal from '@material-ui/core/Modal';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
