@@ -4,15 +4,17 @@
 
 import React, { useEffect, memo } from 'react';
 import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
-import { useParams } from 'react-router-dom';
 
 import { MessageBox, StyledBox } from 'components/MessageBox';
 import PublishBox from 'components/PublishBox/PublishBox';
-import Modal from '@material-ui/core/Modal';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 import { Feed } from 'components/Feed';
@@ -20,6 +22,8 @@ import { BiArrowBack } from 'react-icons/bi';
 import CloutContext from '../../cloutContext';
 import ProfileFinancials from './ProfileFinancials';
 import BuySellBox from './BuySellBox';
+
+import messages from './messages';
 
 import Banner from '../../images/banner.jpg';
 import DefaultUser from '../../images/defaultuser.png';
@@ -43,6 +47,7 @@ class ProfilePage extends React.Component {
 
   state = {
   	userName: '',
+	newName: '', 
   	description: '',
   	isUpdateModalOpen: false,
   	messages: [],
@@ -82,29 +87,15 @@ class ProfilePage extends React.Component {
   };
 
   toggleModal = () => {
-  	this.setState({ isUpdateModalOpen: !this.state.isUpdateModalOpen });
+  	this.setState(prevState => ({ isUpdateModalOpen: !prevState.isUpdateModalOpen }));
   };
+  
+  updateUsername = async () => {
+	  if( !this.state.newName) return;
+	  var profile = await this.context.wallet.changeProfileName(this.state.newName);
+	  console.log(profile);
+  }
 
-
-
-  RenderUpdateModal = () => (
-  	<Modal
-  		ariaHideApp={false}
-  		isOpen={this.state.isUpdateModalOpen}
-  		// onAfterOpen={afterOpenModal}
-  		onRequestClose={this.toggleModal}
-  		style={customStyles}
-  		contentLabel="Example Modal"
-  	>
-  		<Button onClick={this.toggleModal} className="btn btn-light">
-        X
-  		</Button>
-  		<Button onClick={this.toggleModal} style={{ float: 'right' }}>
-        Save
-  		</Button>
-  		<div>Plop</div>
-  	</Modal>
-  );
 
   render() {
   	if ( this.state.profile.statusCode == 404 ){
@@ -169,8 +160,10 @@ class ProfilePage extends React.Component {
   					<Button
   						style={{ float: 'right', marginRight: 10, marginTop: 10 }}
   						onClick={this.toggleModal}
+						variant="contained"
+						color="primary"
   					>
-              Update Profile
+						<FormattedMessage {...messages.update_profile} />
   					</Button>
   				) : (
             <>
@@ -178,7 +171,34 @@ class ProfilePage extends React.Component {
               <a href="#">Stealth Follow</a>
             </>
   				)}
-  				<this.RenderUpdateModal />
+				<Dialog
+					aria-labelledby="Update Profile"
+					aria-describedby="Update Profile"
+					open={this.state.isUpdateModalOpen}
+					// onAfterOpen={afterOpenModal}
+					onClose={this.toggleModal}
+					contentLabel="Update Profile"
+				>
+					<DialogTitle id="customized-dialog-title" onClose={this.props.toggle}>
+						<FormattedMessage {...messages.update_profile} />
+						<IconButton aria-label="close" style={{ position: 'absolute', right: 8, top: 8 }} onClick={this.toggleModal}>
+							<CloseIcon />
+						</IconButton>
+					</DialogTitle>
+					<DialogContent dividers>
+						<div style={{ marginTop: 20, display: 'flex' }}>
+							<TextField
+								name="username" 
+								onChange={e => {
+									this.setState({ newName: e.target.value });
+								}}
+								label=<FormattedMessage {...messages.username} /> variant="outlined" />
+							<Button variant="contained" color="primary" style={{ marginLeft: 20 }} onClick={this.updateUsername} >
+								<FormattedMessage {...messages.update_username} />
+							</Button>
+						</div>
+					</DialogContent>
+				</Dialog>
   				<StyledBox
   					style={{
   						marginLeft: 40,
@@ -187,13 +207,9 @@ class ProfilePage extends React.Component {
   						flexDirection: 'column',
   					}}
   				>
-  					<span style={{ fontSize: 25, fontWeight: 'bold' }}>
-              @{this.state.profile.handle}
-  					</span>
-  					<br />
+  					<h2>@{this.state.profile.handle}</h2>
   					<span style={{}}>
-  						{this.state.profile.description ||
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'}
+  						{this.state.profile.description || <FormattedMessage {...messages.default_description} /> }
   					</span>
   					<div
   						style={{
@@ -205,10 +221,10 @@ class ProfilePage extends React.Component {
   							width: '100%',
   						}}
   					>
-  						<span>0 Followers</span>
-  						<span>0 Following</span>
+  						<span>0 <FormattedMessage {...messages.followers} /></span>
+  						<span>0 <FormattedMessage {...messages.following} /></span>
   						<span>
-                A{' '}
+							<FormattedMessage {...messages.address} />
   							{this.context.address
   								? `${this.context.address.substring(0, 10)}...`
   								: '0x0'}

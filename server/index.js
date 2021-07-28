@@ -102,7 +102,7 @@ app.get('/login', userController.getLogin);
 app.post('/login', userController.postLogin);
 app.post('/loginphone', userController.prepareLoginPhone);
 app.get('/logout', passportConfig.isAuthenticated, userController.logout);
-
+app.post('/profile', passportConfig.isAuthenticated, userController.updateProfile);
 /**
  * OAuth authentication routes. (Sign in)
  */

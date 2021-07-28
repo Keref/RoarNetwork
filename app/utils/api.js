@@ -68,6 +68,15 @@ class API {
   	// let messages = await this.messagesContract.methods.getProfileMessages(profileAddress).call();
   	return profile;
   };
+  
+  /**
+   * @dev Update profile
+   * @params params {username, phone}
+   */
+  updateProfile = async (params) => {
+  	const profile = await this.postRequest(`/profile`);
+  	return profile;
+  };
 
   /**
    * @dev Fetch a profile information
@@ -120,6 +129,8 @@ class API {
   	return airdrop;
   };
 
+  
+  
 
 }
 

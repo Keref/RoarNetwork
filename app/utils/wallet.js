@@ -173,6 +173,24 @@ class Wallet {
   			
   		});
   }
+  
+  
+	/**
+	* @dev Update profile name
+	*/
+	async changeProfileName( newName ){
+		this.profileFactoryContract.methods
+			.changeProfileName(this.username, newName)
+			.send({ from: this.myAccount, gas: this.maxGas })
+  			.on('receipt', async receipt => {
+				//check that change was registered, then change on server
+				console.log('changed name and receipt:', receipt);
+				var profile = await roarAPI.updateProfile({ username: newName });
+				console.log("New profile:", profile)
+			});
+	}
+  
+  
 
   sendMessage = async (message, commentId) => {
   	if (!message) {

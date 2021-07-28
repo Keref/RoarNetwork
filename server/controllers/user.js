@@ -20,6 +20,26 @@ exports.getLogin = (req, res) => {
 	return res.status(401).json({ status: 'error' });
 };
 
+
+/**
+ * POST /profile
+ * Update user profile
+ */
+exports.updateProfile = async ( req,res, next) => {
+	//update username
+	if ( req.body.username ){
+		let existingUser = await User.findOne({ username: req.body.username }).exec()
+		
+		if (existingUser) return res.status(500).json({status: 'error'})
+		
+		req.user.username = req.body.username;
+		await user.save()
+		
+		return res.json({ status: 'success' });
+	}
+}
+
+
 /**
  * POST /login
  * Sign in using seed or phone and phone 2FA

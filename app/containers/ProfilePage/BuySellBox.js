@@ -4,6 +4,10 @@ import TextField from '@material-ui/core/TextField';
 import CloutContext from '../../cloutContext';
 import DefaultUser from '../../images/defaultuser.png';
 
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+
+
 class ProfileFinancials extends React.Component {
 	static contextType = CloutContext;
 
@@ -63,7 +67,7 @@ class ProfileFinancials extends React.Component {
   						borderRadius: 5,
   					}}
   				>
-                  Buy
+                  <FormattedMessage {...messages.buy} />
   				</Button>
   				<Button
   					onClick={() => {
@@ -81,7 +85,7 @@ class ProfileFinancials extends React.Component {
   						marginLeft: 20,
   					}}
   				>
-                  Sell
+                  <FormattedMessage {...messages.sell} />
   				</Button>
   			</div>
   			<div
@@ -107,7 +111,7 @@ class ProfileFinancials extends React.Component {
   					/>
   				)}
   			</div>
-  			<span>Avail: {bal}</span>
+  			<span><FormattedMessage {...messages.avail} />: {bal}</span>
   			<Button variant="outlined" onClick={this.buySellTokens}>
   				{this.state.buyOrSell}
   			</Button>
