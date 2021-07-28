@@ -14,17 +14,6 @@ import CloutContext from '../../cloutContext';
 import PublishBox from '../PublishBox/PublishBox';
 import Message from './Message';
 
-const customStyles = {
-	content: {
-		top: '50%',
-		left: '50%',
-		right: 'auto',
-		bottom: 'auto',
-		marginRight: '-50%',
-		transform: 'translate(-50%, -50%)',
-		width: 600,
-	},
-};
 
 /**
  * MessageBox displays a message with type and owner props
@@ -133,7 +122,6 @@ class MessageBox extends React.Component {
   				open={this.state.isCommentModalOpen}
   				// onAfterOpen={afterOpenModal}
   				onClose={this.toggleModal}
-  				style={customStyles}
   				contentLabel="Example Modal"
   			>
   				<div>
