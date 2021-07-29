@@ -14,6 +14,7 @@ exports.getLogin = (req, res) => {
 			username: req.user.username,
 			address: req.user.address,
 			mnemonic: req.user.mnemonic,
+			following: req.user.following,
 		});
 	}
 
@@ -21,23 +22,48 @@ exports.getLogin = (req, res) => {
 };
 
 
+
 /**
  * POST /profile
  * Update user profile
  */
 exports.updateProfile = async ( req,res, next) => {
-	//update username
+	// update username
 	if ( req.body.username ){
-		let existingUser = await User.findOne({ username: req.body.username }).exec()
+		const existingUser = await User.findOne({ username: req.body.username }).exec()
 		
 		if (existingUser) return res.status(500).json({status: 'error'})
 		
 		req.user.username = req.body.username;
-		await user.save()
+		await req.user.save()
 		
 		return res.json({ status: 'success' });
 	}
 }
+
+
+/**
+ * POST /settings/following
+ * Update following
+ */
+exports.updateFollowing = async ( req,res, next) => {
+	if ( req.body.action && req.body.username ){
+		const existingUser = await User.findOne({ username: req.body.username }).exec()
+		
+		if (!existingUser) return res.status(500).json({status: 'error'})
+		
+		if ( req.user.following.indexOf(existingUser) !== -1 ) {
+			req.user.following.addToSet(existingUser);
+		}
+		else {
+			req.user.following.pull(existingUser);
+		}
+		await req.user.save()
+		
+		return res.json({ status: 'success' });
+	}
+}
+
 
 
 /**

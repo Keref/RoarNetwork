@@ -105,7 +105,7 @@ export default function Header() {
 				<SearchIcon />
 			</IconButton>
 
-			{appState.address === '' ? <LoginButton /> : <></>}
+			{!appState.address || appState.address === '' ? <LoginButton /> : <></>}
 
 			<StyledMenu
 				id="customized-menu"

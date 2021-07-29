@@ -63,7 +63,7 @@ class LoginModal extends React.Component {
 
   	// on oaut login callback, it will be logged in but without mnemonic, which is provided by the server, so need to check login first
   	const profile = await roarAPI.login();
-
+  	console.log( 'checklogin', myMnemonic, profile.mnemonic, myMnemonic || profile.mnemonic, profile)
   	// if no seed found locally nor in login information, cant do anything, destroy session and start afresh
   	if (!myMnemonic && !profile.mnemonic) {
   		this.context.wallet.logout();
@@ -71,11 +71,15 @@ class LoginModal extends React.Component {
   	} else if (profile.status === 'success') {
   		this.context.wallet.importMnemonic(
   			myMnemonic || profile.mnemonic,
-  			profile.username,
+  			profile.username
   		);
+  		this.context.updateProfile({profile})
   	} else {
   		// we have a mnemonic, but we've been logged out of the server, use mnemonic to log in with signature
-  		this.checkMnemonic(myMnemonic || profile.mnemonic, this.login);
+  		this.checkMnemonic(myMnemonic || profile.mnemonic, async () => {
+  			await this.setState({ mnemonic: myMnemonic || profile.mnemonic});
+  			this.login()
+  		});
   	}
   };
 
@@ -99,7 +103,6 @@ class LoginModal extends React.Component {
 
   		this.setState({ signature });
   		this.setState({ address: wallet.address });
-	  console.log('wtf')
   		this.setState({ isSeedLoginDisabled: false });
   		this.setState({ isGenerating: false });
 	  if( callback ) callback();
@@ -126,10 +129,14 @@ class LoginModal extends React.Component {
   	// console.log(profile);
   	if (profile.status === 'success') {
   		// display vars
-  		this.context.updateProfile(profile.username, profile.address);
+  		this.context.updateProfile({username: profile.username, address: profile.address});
   		// setup wallet
   		this.context.wallet.importMnemonic(this.state.mnemonic, profile.username);
   		// this.setState({ isLoginModalOpen: false });
+		
+  		const following = await roarAPI.getFollowing();
+  		if ( following ) this.context.updateProfile({ following });
+		
   		this.props.toggle();
   	}
   };

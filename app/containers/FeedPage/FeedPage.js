@@ -40,7 +40,7 @@ export function FeedPage({
 	return (
 		<Grid container spacing={3}>
 			<Grid item sm={12} md={8}>
-				{appState.address == '' ? <WelcomeBox /> : <PublishBox />}
+				{!appState.address || appState.address == '' ? <WelcomeBox /> : <PublishBox />}
 				<Feed ignoreComments />
 			</Grid>
 

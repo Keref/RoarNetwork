@@ -1,10 +1,15 @@
 import Web3 from 'web3';
 import { ethers } from 'ethers';
 import roarAPI from './api';
-import MessagesABI from './ABI/MessagesABI';
-import ProfileABI from './ABI/ProfileABI';
-import ProfileFactoryABI from './ABI/ProfileFactoryABI';
-import InteractionTipsABI from './ABI/InteractionTipsABI';
+
+import MessagesAbi from '../../ABI/Messages.json';
+import ProfileAbi from '../../ABI/Profile.json';
+import ProfileFactoryAbi from '../../ABI/ProfileFactory.json';
+import InteractionTipsAbi from '../../ABI/InteractionTips.json';
+import ProfileListsAbi from '../../ABI/ProfileLists.json';
+import Addresses from '../../ABI/Addresses.json';
+
+
 
 class Wallet {
 	// #privateKey;
@@ -31,17 +36,13 @@ class Wallet {
 
   myProfileAddress;
 
-  messagesAddress = '0xC0977bfA44719b9D31a87B853A3Bed5a43Ca9A6F';
-
-  profileFactoryAddress = '0x1fBEB810c3ca6e3e5375B553EfdbC20E1c43937F';
-
-  interactionTipsAddress = '0x2BFfFB5BEFbD440f08Ce769252Da1A63495D8A0B';
-
   messagesContract;
 
   profileFactoryContract;
 
   interactionTipsContract;
+  
+  profileListsContract;
 
   messagesHeight = 0;
 
@@ -57,32 +58,39 @@ class Wallet {
   	);
   	// this.connectToRPCAccount();
   	this.messagesContract = new this.web3.eth.Contract(
-  		MessagesABI,
-  		this.messagesAddress,
+  		MessagesAbi.abi,
+  		Addresses.messagesAddress,
   	);
   	this.profileFactoryContract = new this.web3.eth.Contract(
-  		ProfileFactoryABI,
-  		this.profileFactoryAddress,
+  		ProfileFactoryAbi.abi,
+  		Addresses.profileFactoryAddress,
   	);
   	this.interactionTipsContract = new this.web3.eth.Contract(
-  		InteractionTipsABI,
-  		this.interactionTipsAddress,
+  		InteractionTipsAbi.abi,
+  		Addresses.interactionTipsAddress,
+  	);
+  	this.profileListsContract = new this.web3.eth.Contract(
+  		ProfileListsAbi.abi,
+  		Addresses.profileListsAddress,
   	);
   }
 
   /*
    * @dev Uses a mnemonic to initialize a wallet
    */
-  importMnemonic(mnemonic, username) {
+  async importMnemonic(mnemonic, username) {
+	  console.log('import mnemonic,', mnemonic, username)
   	const mnemonicWallet = ethers.Wallet.fromMnemonic(mnemonic);
-
+  	console.log(mnemonicWallet)
   	this.web3.eth.accounts.wallet.add(mnemonicWallet.privateKey);
   	this.username = username;
   	this.address = mnemonicWallet.address;
   	this.myAccount = mnemonicWallet.address;
-  	this.updateProfile(username, mnemonicWallet.address);
+  	this.updateProfile({ username, address: mnemonicWallet.address });
 	
   	this.getOrSetProfile();
+  	const foll = await roarAPI.getFollowing(this.address)
+  	this.updateProfile({ following: foll })
   }
 
   /*
@@ -105,9 +113,9 @@ class Wallet {
   	this.updateStateCallback = updateStateCallback;
   }
 
-  updateProfile() {
+  updateProfile(params) {
   	if (this.updateStateCallback)
-  		this.updateStateCallback(this.username, this.address);
+  		this.updateStateCallback(params);
   }
 
   /**
@@ -122,7 +130,7 @@ class Wallet {
   	localStorage.removeItem('RoarUserMnemonic');
   	localStorage.removeItem('RoarUserAddress');
 	
-  	this.updateProfile();
+  	this.updateProfile({username: null, address: null, profile: {}, following: [] });
 	
   	return true;
   }
@@ -158,7 +166,7 @@ class Wallet {
   					.on('receipt', function(receipt) {
   						const profileEvent = receipt.events.ProfileCreated;
   						this.myProfileAddress = profileEvent.returnValues.tokenAddress;
-  						this.profileContract = new this.web3.eth.Contract(ProfileABI, this.myProfileAddress);
+  						this.profileContract = new this.web3.eth.Contract(ProfileAbi.abi, this.myProfileAddress);
   						this.updateBalances();
   					})
   					.on('error', function(error) {
@@ -166,7 +174,7 @@ class Wallet {
   					});
   			} else {
   				this.myProfileAddress = address;
-  				this.profileContract = new this.web3.eth.Contract(ProfileABI, this.myProfileAddress);
+  				this.profileContract = new this.web3.eth.Contract(ProfileAbi.abi, this.myProfileAddress);
   				this.updateBalances();
   			}
 
@@ -175,20 +183,20 @@ class Wallet {
   }
   
   
-	/**
+  /**
 	* @dev Update profile name
 	*/
-	async changeProfileName( newName ){
-		this.profileFactoryContract.methods
-			.changeProfileName(this.username, newName)
-			.send({ from: this.myAccount, gas: this.maxGas })
+  async changeProfileName( newName ){
+  	this.profileFactoryContract.methods
+  		.changeProfileName(this.username, newName)
+  		.send({ from: this.myAccount, gas: this.maxGas })
   			.on('receipt', async receipt => {
-				//check that change was registered, then change on server
-				console.log('changed name and receipt:', receipt);
-				var profile = await roarAPI.updateProfile({ username: newName });
-				console.log("New profile:", profile)
-			});
-	}
+  			// check that change was registered, then change on server
+  			console.log('changed name and receipt:', receipt);
+  			const profile = await roarAPI.updateProfile({ username: newName });
+  			console.log("New profile:", profile)
+  		});
+  }
   
   
 
@@ -274,7 +282,7 @@ class Wallet {
   buyTokens = async (amount, profileAddress) => {
   	console.log('buy', amount, 'creator tokens at ', profileAddress);
   	const profileContract = new this.web3.eth.Contract(
-  		ProfileABI,
+  		ProfileAbi.abi,
   		profileAddress,
   	);
 
@@ -292,6 +300,24 @@ class Wallet {
   	const amountBought = sale.events.StockBought.returnValues.amount;
   	return amountBought;
   };
+  
+  
+  /**
+   * @dev Follow a profile
+   */
+  follow = async (profileAddress, addRemoveFollower) => {
+	  
+  	await this.profileListsContract.methods[ addRemoveFollower ](profileAddress, 0)
+  		.send({
+  			from: this.myAccount,
+  			gas: this.maxGas,
+  		})
+  		.catch(() => {		})
+
+  	const foll = await roarAPI.getFollowing(this.myAccount);
+  	this.updateProfile({ following: foll })
+  }
+
 }
 
 export default Wallet;

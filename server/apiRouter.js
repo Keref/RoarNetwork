@@ -7,6 +7,7 @@ const apiController = require('./controllers/api');
 router.get('/', apiController.getAppInfo);
 router.get('/getMessage/:id', apiController.getMessage);
 router.get('/getProfile/:handle', apiController.getProfile);
+router.get('/getFollowing/:handle', apiController.getFollowing);
 router.get('/airdrop', passportConfig.isAuthenticated, apiController.getAirdrop);
 
 module.exports = router;

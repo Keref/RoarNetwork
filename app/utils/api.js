@@ -74,7 +74,7 @@ class API {
    * @params params {username, phone}
    */
   updateProfile = async (params) => {
-  	const profile = await this.postRequest(`/profile`);
+  	const profile = await this.postRequest('/profile', params);
   	return profile;
   };
 
@@ -127,6 +127,16 @@ class API {
   	const airdrop = await this.getRequest('/api/airdrop');
   	console.log(airdrop);
   	return airdrop;
+  };
+
+  
+  /**
+   * @dev Get current following
+   */
+  getFollowing = async (address) => {
+  	const following = await this.getRequest(`/api/getFollowing/${address}`);
+  	delete following.statusCode;
+  	return following;
   };
 
   

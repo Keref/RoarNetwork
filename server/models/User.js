@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema(
 		countryCode: String,
 		phone: String,
 		phone2fa: String,
+		following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
 		/*
 	twoFA: {
 		googleAuthToken: String,
