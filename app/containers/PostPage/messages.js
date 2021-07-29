@@ -9,11 +9,11 @@ export const scope = 'boilerplate.containers.PostPage';
 
 export default defineMessages({
 	publish: {
-		id: `${scope}.postpage.publish`,
+		id: `${scope}.publish`,
 		defaultMessage: 'Publish',
 	},
 	title: {
-		id: `${scope}.postpage.title`,
+		id: `${scope}.title`,
 		defaultMessage: 'New Post',
 	},
 });

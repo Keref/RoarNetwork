@@ -14,18 +14,17 @@ class API {
 	}
 
 	async sendRequest(requestUrl, method, params) {
-		const status = 'SUCCESS';
-		const statusCode = 200;
 
 		const result = await fetch(requestUrl, {
 			method,
 			headers: this.createHeaders(),
 			body: JSON.stringify(params),
+			credentials: 'include',
 		})
 			.then(async response => {
-				const result = await response.json();
-				result.statusCode = response.status;
-				return result;
+				const res = await response.json();
+				res.statusCode = response.status;
+				return res;
 			})
 			.catch(error => {
 				console.error(requestUrl, error);
@@ -37,11 +36,11 @@ class API {
 
 	// Helpers
 	async getRequest(requestUrl, params) {
-		return await this.sendRequest(requestUrl, 'GET', params);
+		return this.sendRequest(requestUrl, 'GET', params);
 	}
 
 	async postRequest(requestUrl, params) {
-		return await this.sendRequest(requestUrl, 'POST', params);
+		return this.sendRequest(requestUrl, 'POST', params);
 	}
 
   /*
@@ -69,6 +68,15 @@ class API {
   	// let messages = await this.messagesContract.methods.getProfileMessages(profileAddress).call();
   	return profile;
   };
+  
+  /**
+   * @dev Update profile
+   * @params params {username, phone}
+   */
+  updateProfile = async (params) => {
+  	const profile = await this.postRequest('/profile', params);
+  	return profile;
+  };
 
   /**
    * @dev Fetch a profile information
@@ -88,6 +96,23 @@ class API {
   };
 
   /**
+   * @dev Ask server for phone 2fa
+   */
+  getCode = async (params) => {
+  	const getcode = await this.postRequest('/loginphone', params);
+  	return getcode;
+  };
+  
+  /**
+   * @dev loginWithCode
+   * @params { phone, countryCode, phone2fa }
+   */
+  loginWithCode  = async (params) => {
+  	const profile = await this.postRequest('/login', params);
+  	return profile;
+  };
+
+  /**
    * @dev Ask server to logout (only destroys server session)
    */
   logout = async () => {
@@ -103,6 +128,20 @@ class API {
   	console.log(airdrop);
   	return airdrop;
   };
+
+  
+  /**
+   * @dev Get current following
+   */
+  getFollowing = async (address) => {
+  	const following = await this.getRequest(`/api/getFollowing/${address}`);
+  	delete following.statusCode;
+  	return following;
+  };
+
+  
+  
+
 }
 
 // Export an instantiated class, no need to reinstantiate every time it's called somewhere

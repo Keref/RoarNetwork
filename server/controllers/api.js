@@ -1,29 +1,21 @@
 const Web3 = require('web3');
 // const ethers = require('ethers');
-const { MessagesABI } = require('../ABI/MessagesABI');
-const { ProfileABI } = require('../ABI/ProfileABI');
-const { ProfileFactoryABI } = require('../ABI/ProfileFactoryABI');
-const { InteractionTipsABI } = require('../ABI/InteractionTipsABI');
 
-const messagesAddress = '0xC0977bfA44719b9D31a87B853A3Bed5a43Ca9A6F';
-const profileFactoryAddress = '0x1fBEB810c3ca6e3e5375B553EfdbC20E1c43937F';
-const interactionTipsAddress = '0x2BFfFB5BEFbD440f08Ce769252Da1A63495D8A0B';
+const MessagesABI = require('../../ABI/Messages.json');
+const ProfileABI = require('../../ABI/Profile.json');
+const ProfileFactoryABI = require('../../ABI/ProfileFactory.json');
+const InteractionTipsABI = require('../../ABI/InteractionTips.json');
+const ProfileListsABI = require('../../ABI/ProfileLists.json');
+const Addresses = require('../../ABI/Addresses.json');
 
 /**
  * Web3 query functions. Not meant to send transactions
  */
-console.log('Initializing API -- connecting to web3 RPC');
 const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
-
-const messagesContract = new web3.eth.Contract(MessagesABI, messagesAddress);
-const profileFactoryContract = new web3.eth.Contract(
-	ProfileFactoryABI,
-	profileFactoryAddress,
-);
-const interactionTipsContract = new web3.eth.Contract(
-	InteractionTipsABI,
-	interactionTipsAddress,
-);
+const messagesContract = new web3.eth.Contract(MessagesABI.abi, Addresses.messagesAddress);
+const profileFactoryContract = new web3.eth.Contract(ProfileFactoryABI.abi, Addresses.profileFactoryAddress);
+const interactionTipsContract = new web3.eth.Contract(InteractionTipsABI.abi, Addresses.interactionTipsAddress);
+const profileListsContract = new web3.eth.Contract(ProfileListsABI.abi, Addresses.profileListsAddress);
 
 /**
  * GET /api/getAppInfo
@@ -46,7 +38,8 @@ exports.getAppInfo = async (req, res) => {
  * currently relying on asking the rpc but later will ask the DB and populate results
  */
 exports.getMessage = async (req, res) => {
-	if (!req.params.id) return res.json({ status: 'INVALID_ID' });
+	/* eslint no-restricted-globals: 0 */
+	if (!req.params.id || isNaN(req.params.id) ) return res.json({ status: 'INVALID_ID' });
 	const rawMessage = await messagesContract.methods
 		.getMessage(req.params.id)
 		.call();
@@ -81,6 +74,36 @@ exports.getMessage = async (req, res) => {
 	return res.json(message);
 };
 
+
+/**
+ * GET /api/getNextMessages/:id
+ * returns message with additional important info
+ * currently relying on asking the rpc but later will ask the DB and populate results
+ */
+exports.getNextMessages = async (req, res) => {
+	/* eslint no-restricted-globals: 0 */
+	if (!req.params.id || isNaN(req.params.id) ) return res.json({ status: 'INVALID_ID' });
+};
+
+
+
+
+
+/**
+ * GET /api/getFollowing/:handle
+ * returns following list
+ */
+exports.getFollowing = async (req, res) => {
+	if (!req.params.handle) return res.json({ status: 'INVALID_ID' });
+	
+	const listIndex = await profileListsContract.methods.following(req.params.handle).call();
+	const following = await profileListsContract.methods.getList(listIndex).call();
+	
+	return res.json(following.profileAddresses);
+};
+
+
+
 /**
  * GET /api/getProfile/:handle
  * returns profile information
@@ -91,13 +114,21 @@ exports.getProfile = async (req, res) => {
 	const profileAddress = await profileFactoryContract.methods
 		.getProfile(req.params.handle)
 		.call();
-	const profileContract = new web3.eth.Contract(ProfileABI, profileAddress);
+	/* eslint eqeqeq: 0 */
+	if ( profileAddress == 0 ) return res.status(404).json({})
+		
+	const profileContract = new web3.eth.Contract(ProfileABI.abi, profileAddress);
 
 	const desc = await profileContract.methods.description().call();
 	const owner = await profileContract.methods.owner().call();
 	const lifetimeDividends = await profileContract.methods.lifetimeDividends().call();
 	const founderReward = await profileContract.methods.founderReward().call();
-
+	/*
+	const followersIndex = await profileListsContract.methods.following(profileAddress).call();
+	console.log("his follower index list", followersIndex);
+	const followers = await profileListsContract.methods.profileLists(followersIndex).call();
+	console.log("the follower struct", followers);
+*/
 	const tokenSupply = await profileContract.methods.totalSupply().call();
 	const tokenValue = await web3.eth.getBalance(
 		profileAddress,

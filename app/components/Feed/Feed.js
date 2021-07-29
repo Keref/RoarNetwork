@@ -18,15 +18,25 @@ class Feed extends React.Component {
    * @dev fetch X messages below currentHeight
    */
   fetchMoreData = async () => {
-  	for (let k = 0; k < 5; k += 1) {
-  		if (this.state.currentHeight < 0) return;
+  	let added = 0;
+	
+  	while ( added < 5 ){
+  		if (this.state.currentHeight < 1) return;
   		/* eslint-disable no-await-in-loop */
   		const item = await roarAPI.getMessage(this.state.currentHeight);
-  		const { items } = this.state;
-  		items.push(item);
 
-  		this.setState({ items });
-  		this.setState(prevState => ({currentHeight: prevState.currentHeight - 1 }));
+  		await this.setState(prevState => ({currentHeight: prevState.currentHeight - 1 }));
+  		if ( this.props.ignoreComments && item.replyToId != 0 ) continue;
+		
+  		const { items } = this.state;
+  		if (items.length > 0 ) {
+  			const last = items[items.length-1];
+  			// sometimes infinitescroll may be fired simulatneously or something and cause 1 message to be pushed several times
+  			if ( last.id == item.id) continue;
+  		}
+  		items.push(item);
+  		await this.setState({ items });
+  		added += 1;
   	}
   };
 
@@ -50,7 +60,7 @@ class Feed extends React.Component {
   					<MessageBox
   						key={item.id}
   						message={item.URI}
-  						replyTo={item.replyId}
+  						replyTo={item.replyToId}
   						comments={item.comments}
   						messageId={item.id}
   						ownerName={item.ownerName}

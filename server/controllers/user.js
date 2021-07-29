@@ -1,53 +1,114 @@
 const passport = require('passport');
 const ethers = require('ethers');
 const User = require('../models/User');
-
+const messageBot = require('../models/MessageBot');
 /**
  * GET /login
  * Signup/login page
  */
 exports.getLogin = (req, res) => {
+	// console.log('req.user', req.user)
 	if (req.user) {
 		return res.json({
 			status: 'success',
 			username: req.user.username,
 			address: req.user.address,
 			mnemonic: req.user.mnemonic,
+			following: req.user.following,
 		});
 	}
 
 	return res.status(401).json({ status: 'error' });
 };
 
+
+
+/**
+ * POST /profile
+ * Update user profile
+ */
+exports.updateProfile = async ( req,res, next) => {
+	// update username
+	if ( req.body.username ){
+		const existingUser = await User.findOne({ username: req.body.username }).exec()
+		
+		if (existingUser) return res.status(500).json({status: 'error'})
+		
+		req.user.username = req.body.username;
+		await req.user.save()
+		
+		return res.json({ status: 'success' });
+	}
+}
+
+
+/**
+ * POST /settings/following
+ * Update following
+ */
+exports.updateFollowing = async ( req,res, next) => {
+	if ( req.body.action && req.body.username ){
+		const existingUser = await User.findOne({ username: req.body.username }).exec()
+		
+		if (!existingUser) return res.status(500).json({status: 'error'})
+		
+		if ( req.user.following.indexOf(existingUser) !== -1 ) {
+			req.user.following.addToSet(existingUser);
+		}
+		else {
+			req.user.following.pull(existingUser);
+		}
+		await req.user.save()
+		
+		return res.json({ status: 'success' });
+	}
+}
+
+
+
 /**
  * POST /login
- * Sign in using seed
+ * Sign in using seed or phone and phone 2FA
  */
 exports.postLogin = async (req, res, next) => {
-	// console.log(req.body)
 	// we test login validity here then let passport just handle the session stuff
-	try {
-		const msg = `${req.body.randomString}.ROAR.${req.body.userAddress}`;
-		const whoSigned = ethers.utils.verifyMessage(msg, req.body.userSignature);
-		if ( !whoSigned === req.body.userAddress ) throw new Error("Signature error");
-		// console.log('whoSigned', whoSigned, whoSigned === req.body.userAddress);
+	let user ;
+	// if login with seed signature
+	if ( req.body.randomString && req.body.userAddress && req.body.userSignature ){
+		try {
+			const msg = `${req.body.randomString}.ROAR.${req.body.userAddress}`;
+			const whoSigned = ethers.utils.verifyMessage(msg, req.body.userSignature);
+			console.log('whoSigned', whoSigned, whoSigned === req.body.userAddress);
+			if ( !whoSigned === req.body.userAddress ) throw new Error("Signature error");
 
-		let user = await User.findOne({ address: req.body.userAddress });
-		if (!user) {
-			user = new User({
-				address: req.body.userAddress,
-				username: req.body.userAddress.substring(0, 20),
-			});
-			await user.save();
+			user = await User.findOne({ address: req.body.userAddress });
+			if (!user) {
+				user = new User({
+					address: req.body.userAddress,
+					username: req.body.userAddress.substring(2, 14),
+				});
+				await user.save();
+			}
+		} catch (err) {
+			console.log('Signature error', err);
+			return res.json({ status: 'error' });
 		}
-		req.body.username = user.username;
-		req.body.password = 'dummy';
-	} catch (err) {
-		console.log('Signature error', err);
-		return res.json({ status: 'error' });
 	}
+	else if ( req.body.phone2fa && req.body.countryCode && req.body.phone ){
+		console.log('loginwith code', req.body)
+		user = await User.findOne({ phone: req.body.phone, countryCode: req.body.countryCode, phone2fa: req.body.phone2fa });
+		if (!user ) return res.status(401).json({status: 'error'})
+	}
+	else {
+		return res.status(401).json({status: 'error'})
+	}
+	// passport expects those values or will throw "missing credentials"
+	req.body.username = user.username;
+	req.body.password = 'dummy4515465565464';
+	
+	/* eslint no-unused-vars: 0 */
 	passport.authenticate('local', (err, user, info) => {
-		console.log('plip', err, user, info);
+		// console.log('plip', err, user, info);
 		if (err) {
 			return next(err);
 		}
@@ -67,9 +128,49 @@ exports.postLogin = async (req, res, next) => {
 				status: 'success',
 				username: req.user.username,
 				address: req.user.address,
+				mnemonic: req.user.mnemonic,
 			});
 		});
 	})(req, res, next);
+};
+
+/**
+ * POST /loginPhone
+ * Prepare phone 2FA
+ */
+exports.prepareLoginPhone = async (req, res, next) => {
+	// console.log(req.body)
+	// we test login validity here then let passport just handle the session stuff
+	try {
+		console.log('prepre login', req.body);
+		let user = await User.findOne({ phone: req.body.phone, countryCode: req.body.countryCode });
+		if (!user) {
+			user = new User({
+				phone: req.body.phone,
+				countryCode: req.body.countryCode
+			});
+			
+			user.mnemonic = ethers.Wallet.createRandom().mnemonic.phrase;
+			const wallet = ethers.Wallet.fromMnemonic(user.mnemonic);
+			user.address = wallet.address;
+			user.username = user.address.substring(2,14);
+			
+		}
+		user.phone2fa = 6666; // Math.floor(Math.random()*9000) + 1000;
+		await user.save();
+		// send sms
+		console.log('Sending token by SMS');
+
+		const message = `【BIBO】您的验证码是${user.phone2fa}。如非本人操作，请忽略本短信，千万不要将验证码告诉任何人`
+		console.log("USDERSMSS", message)
+		// messageBot.messageSMS(user, message, user.phone2fa)
+		messageBot.check()
+		
+		// generate 4 nums phone2fa and return success
+		return res.json({status: 'success' })
+	} catch (err) {
+		return res.json({ status: 'error' });
+	}
 };
 
 /**

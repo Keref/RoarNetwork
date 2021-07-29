@@ -11,6 +11,7 @@ import ButtonBar from './ButtonBar';
 import messages from './messages';
 import CloutContext from '../../cloutContext';
 import StyledBox from '../MessageBox/StyledBox';
+/* eslint import/no-cycle: [1, { maxDepth: 1 }] */
 import MessageBox from '../MessageBox/MessageBox';
 import roarAPI from '../../utils/api';
 
@@ -56,7 +57,7 @@ class PublishBox extends React.Component {
   						alignItems: 'flex-start',
   					}}
   				>
-  					<Link href="/profile">
+  					<Link href={`/u/${this.context.username}`}>
   						<Avatar src="../../images/defaultuser.png" alt="User Profile Pic" />
   					</Link>
   					<div style={{ flexGrow: 1 }}>
